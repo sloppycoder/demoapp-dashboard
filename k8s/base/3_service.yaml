@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+  labels:
+    app: dashboard
+    version: v1
+spec:
+  selector:
+    matchLabels:
+      app: dashboard
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: dashboard
+        version: v1
+    spec:
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: server
+          image: gcr.io/vino9-276317/demoapp/dashboard
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9000
+              protocol: TCP
+          env:
+            - name: LISTEN_ADDR
+              value: ":9000"
+            - name: APP_LOG_LEVEL
+              value: "warn"
+            - name: CUST_SVC_ADDR
+              value: "customer:9090"
+            - name: CASA_SVC_ADDR
+              value: "false"
+            - name: ENABLE_PROFILING
+              value: "false"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 384Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  labels:
+    app: dashboard
+    service: dashboard
+spec:
+  type: ClusterIP
+  selector:
+    app: dashboard
+  ports:
+    - name: http
+      port: 9000
