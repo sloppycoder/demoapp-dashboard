@@ -98,7 +98,7 @@ func GetCasaAccounts(customerId string) ([]*api.CasaAccount, error) {
 
 func StartServer(addr string) {
 	e := echo.New()
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
 	e.GET("/dashboard/:login", DashboardHandler)
