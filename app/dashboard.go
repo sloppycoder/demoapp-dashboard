@@ -3,6 +3,7 @@ package app
 import (
 	"dashboard/api"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -29,7 +30,8 @@ func DashboardHandler(ctx echo.Context) error {
 	login := ctx.Param("login")
 	dashboard, err := GetDashboard(login)
 	if err != nil {
-		return ctx.String(http.StatusInternalServerError, "unable to retrieve dashboard")
+		message := fmt.Sprintf("unable to retrieve dashboard due to %v", err)
+		return ctx.String(http.StatusInternalServerError, message)
 	}
 	return ctx.JSON(http.StatusOK, dashboard)
 }
@@ -60,14 +62,14 @@ func GetDashboard(customerId string) (*api.Dashboard, error) {
 }
 
 func GetCustomer(customerId string) (*api.Customer, error) {
-	addr := os.Getenv("CUSTOMER_SVC_ADDR")
+	addr := os.Getenv("CUST_SVC_ADDR")
 	if addr == "" || addr == "false" {
 		return DummyCustomer, nil
 	}
 
 	log.Infof("retrieving customer for %s", customerId)
 
-	req, err := http.NewRequest("GET", addr+"/"+customerId, nil)
+	req, err := http.NewRequest("GET", addr+"/customers/"+customerId, nil)
 	if err != nil {
 		log.Warnf("Got error %v when creating request", err)
 		return nil, err

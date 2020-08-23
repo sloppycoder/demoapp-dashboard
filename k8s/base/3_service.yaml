@@ -30,7 +30,7 @@ spec:
             - name: APP_LOG_LEVEL
               value: "warn"
             - name: CUST_SVC_ADDR
-              value: "customer:9000"
+              value: "http://customer:9000"
             - name: CASA_SVC_ADDR
               value: "false"
             - name: ENABLE_PROFILING
